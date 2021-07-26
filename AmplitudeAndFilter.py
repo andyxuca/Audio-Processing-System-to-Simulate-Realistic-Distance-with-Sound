@@ -4,7 +4,10 @@ import math as math
 
 #function for Log Amplitude
 def amp(dist):
-    return -0.231588*math.log(dist) + 0.970437
+    if dist == 0:
+        return 1
+    else:
+        return 1.63678 * (0.59776 ** dist)
 
 #function for Lin Frequency
 def frequency(dist):
@@ -23,18 +26,18 @@ if dist == 0:
     dist = 1
 
 # Fills a list with amplitude multipliers based on input distance
-logTableList = []
+expTableList = []
 counter = 0
 for i in range(dist, 66):
-    logTableList.append((counter, amp(i)))
+    expTableList.append((counter, amp(i)))
     counter += 1
 
 # Create LogTable with logTableList
-logt = LogTable(logTableList)
+expt = ExpTable(expTableList)
 
 #Use Phasor + TableRead
 lPhasor = Phasor(0.00001)
-AmpRead = TableRead(logt, lPhasor).play()
+AmpRead = TableRead(expt, lPhasor).play()
 
 #Play Sound with changing Volume
 sV = SfPlayer(snd_path, loop=True, mul=AmpRead)
