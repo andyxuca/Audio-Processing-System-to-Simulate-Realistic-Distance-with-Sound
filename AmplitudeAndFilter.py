@@ -65,7 +65,7 @@ Spectrum(sF)
 fig,ax = plt.subplots()
 plt.xlim(0, 66)
 ax.grid(color='black')
-ax.plot(logt.getTable())
+ax.plot(expt.getTable())
 # plt.show()
 
 s.gui(locals())
