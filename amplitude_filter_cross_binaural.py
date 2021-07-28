@@ -21,7 +21,7 @@ s.recordOptions(dur=10, filename=path, fileformat=0, sampletype=1)
 s.recstart()
 
 # sound path
-mainSnd_path = 'sounds/instruments/comptinedunautreete_badquality.wav'
+mainSnd_path = 'sounds/comptinedunautreete_badquality.wav'
 AmbiSnd_path = 'sounds/ocean_binaural2stereo.wav'
 
 # Takes User input for distance
