@@ -51,10 +51,16 @@ lint = LinTable([(0, 15000), (5, 500), (100, 500)]) # CAN/SHOULD BE CHANGED
 freq = TableRead(lint, Phasor).play()
 
 #Play sound with changing filter
-sF = Tone(sV, freq=freq, mul=1).mix(2).out()
+sF = Tone(sV, freq=freq, mul=1)
+
+# Binaural Rendering
+ele = 30
+azi = Sine(0.1).range(0,360)
+binaural_renderer = Binaural(sF, azimuth=azi, elevation=ele, azispan=0, elespan=0)
+binaural_renderer.ctrl(title='Binaural Renderer')
 
 # Cross Synthesis with Ambient Background Noise
-pva1 = PVAnal(sF)
+pva1 = PVAnal(binaural_renderer)
 Amb = SfPlayer(AmbiSnd_path, loop=True, mul=1)
 pva2 = PVAnal(Amb)
 
@@ -62,12 +68,12 @@ fadet = LogTable([(0, 0.25), (35, 1), (100, 1)]) # CAN/SHOULD BE CHANGED
 fade = TableRead(fadet, Phasor).play()
 pvc = PVCross(pva1, pva2, fade=fade)
 pvc.ctrl(title='Cross')
-pvs = PVSynth(pvc).mix(2).out()
+pvs = PVSynth(pvc).out()
 
 #Show Spectrum
 Spectrum(pvs)
 
-# Visual Plot of chosen Table
+# Visual Plot of LogTable
 fig,ax = plt.subplots()
 plt.xlim(0, 66)
 ax.grid(color='black')
