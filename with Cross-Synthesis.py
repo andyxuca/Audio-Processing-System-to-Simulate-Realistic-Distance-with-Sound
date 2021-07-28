@@ -9,10 +9,6 @@ def amp(dist):
     else:
         return 1.63678 * (0.59776 ** dist)
 
-#function for Lin Frequency
-def frequency(dist):
-    return -1100*dist + 15000 # CAN/SHOULD BE CHANGED
-
 #Boot and Start pyo server
 s = Server(duplex=1, buffersize=1024, winhost='asio', nchnls=2).boot()
 print('Server Booted')
@@ -48,15 +44,8 @@ AmpRead = TableRead(expt, Phasor).play()
 #Play Sound with changing Volume
 sV = SfPlayer(mainSnd_path, loop=True, mul=AmpRead)
 
-#Fills a list with Filter Frequency based on input distance
-linTableList = []
-counter2 = 0
-for i in range(dist, 18):
-    linTableList.append((counter2, frequency(i)))
-    counter2 += 1
-
 #Create LinTable with linTableList
-lint = LinTable([(0, 15000), (5, 500), (100, 500)])
+lint = LinTable([(0, 15000), (5, 500), (100, 500)]) # CAN/SHOULD BE CHANGED
 
 #Use Phasor + Table Read
 freq = TableRead(lint, Phasor).play()
@@ -64,7 +53,7 @@ freq = TableRead(lint, Phasor).play()
 #Play sound with changing filter
 sF = Tone(sV, freq=freq, mul=1).mix(2).out()
 
-# Cross Synthesis with Ambient Background Noise time
+# Cross Synthesis with Ambient Background Noise
 pva1 = PVAnal(sF)
 Amb = SfPlayer(AmbiSnd_path, loop=True, mul=1)
 pva2 = PVAnal(Amb)
