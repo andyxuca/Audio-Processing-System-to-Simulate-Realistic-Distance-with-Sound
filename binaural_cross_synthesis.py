@@ -21,7 +21,7 @@ s.recordOptions(dur=10, filename=path, fileformat=0, sampletype=1)
 s.recstart()
 
 # sound path
-mainSnd_path = 'sounds/comptinedunautreete_badquality.wav'
+mainSnd_path = 'sounds/instruments/comptinedunautreete_badquality.wav'
 AmbiSnd_path = 'sounds/ocean_binaural2stereo.wav'
 
 # Takes User input for distance
@@ -51,24 +51,35 @@ lint = LinTable([(0, 15000), (5, 500), (100, 500)]) # CAN/SHOULD BE CHANGED
 freq = TableRead(lint, Phasor).play()
 
 #Play sound with changing filter
-sF = Tone(sV, freq=freq, mul=1)
-
-# Binaural Rendering
-ele = 30
-azi = Sine(0.1).range(0,360)
-binaural_renderer = Binaural(sF, azimuth=azi, elevation=ele, azispan=0, elespan=0)
-binaural_renderer.ctrl(title='Binaural Renderer')
+sF = Tone(sV, freq=freq, mul=1).mix(2).out()
 
 # Cross Synthesis with Ambient Background Noise
-pva1 = PVAnal(binaural_renderer)
+pva1 = PVAnal(sF)
 Amb = SfPlayer(AmbiSnd_path, loop=True, mul=1)
 pva2 = PVAnal(Amb)
 
-fadet = LogTable([(0, 0.25), (35, 1), (100, 1)]) # CAN/SHOULD BE CHANGED
+fadet = LogTable([(0, 0.25), (35, 0,5), (100, 0.5)]) # CAN/SHOULD BE CHANGED
 fade = TableRead(fadet, Phasor).play()
 pvc = PVCross(pva1, pva2, fade=fade)
 pvc.ctrl(title='Cross')
-pvs = PVSynth(pvc).out()
+pvs = PVSynth(pvc).mix(2)
+
+binaural_renderer = HRTF(pvs, azimuth=45, elevation=10)
+# binaural_renderer.out()
+ambAll = HRTF(Amb, azimuth=0, elevation=0)
+
+mixer = Mixer(outs=2,chnls=2)
+mixer.addInput(0,binaural_renderer)
+mixer.addInput(1, ambAll)
+
+mixer.setAmp(0,0,0.5)
+mixer.setAmp(0,1,0.5)
+mixer.setAmp(1,0,0.1)
+mixer.setAmp(1,1,0.1)
+
+
+mixer.out()
+
 
 #Show Spectrum
 Spectrum(pvs)
