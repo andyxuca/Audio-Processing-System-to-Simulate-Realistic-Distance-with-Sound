@@ -67,7 +67,7 @@ pvs = PVSynth(pvc).mix(2).out()
 #Show Spectrum
 Spectrum(pvs)
 
-# Visual Plot of LogTable
+# Visual Plot of chosen Table
 fig,ax = plt.subplots()
 plt.xlim(0, 66)
 ax.grid(color='black')
